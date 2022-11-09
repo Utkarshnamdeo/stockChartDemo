@@ -1,7 +1,8 @@
 import Highcharts from 'highcharts/highstock';
 import HighchartsReact from 'highcharts-react-official';
+import moment from 'moment';
 
-import { result } from './data';
+import client from './api/client';
 import { useEffect, useState } from 'react';
 
 type Data = {
@@ -116,26 +117,11 @@ const getChartOptions = (data: Array<Data>) => {
         tooltip: {
           valueDecimals: 2,
         },
-        // dataGrouping: {
-        //   units: groupingUnits,
-        // },
       },
-      // {
-      //   type: 'column',
-      //   name: 'Volume',
-      //   data: volume,
-      //   yAxis: 1,
-      //   dataGrouping: {
-      //     units: groupingUnits,
-      //   },
-      // },
     ],
   };
   return options;
 };
-
-const wait = async (ms: number) =>
-  new Promise((resolve) => setTimeout(resolve, ms));
 
 const App = () => {
   const [data, setData] = useState<Array<Data>>([]);
@@ -147,7 +133,15 @@ const App = () => {
       try {
         setIsLoading(true);
         setIsError(false);
-        await wait(5000);
+        const result = await client({
+          endpoint: `eod`,
+          query: {
+            symbols: 'AAPL',
+            date_from: '2020-01-01',
+            date_to: moment(new Date()).format('YYYY-MM-DD'),
+            limit: 1000,
+          },
+        });
         setData(result.data);
       } catch (error: any) {
         setIsError(true);
