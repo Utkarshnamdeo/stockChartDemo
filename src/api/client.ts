@@ -26,9 +26,7 @@ const client = async ({
   };
 
   const response = await window.fetch(
-    `${process.env.REACT_APP_API_URL}/${endpoint}?access_key=${
-      process.env.REACT_APP_API_SECRET
-    }${
+    `/api/${endpoint}?access_key=${process.env.REACT_APP_API_SECRET}${
       query && Object.entries(query).length ? `&${getQueryParams(query)}` : ''
     }`,
     config
